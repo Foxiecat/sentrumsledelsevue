@@ -2,6 +2,7 @@
 <div id="home">
     <Header />
     <router-view />
+    <AddCompany v-on:add-company="addCompanies" />
     <Companies v-bind:companies="company" />
 
 </div>
@@ -11,12 +12,15 @@
 // @ is an alias to /src
 import Header from "../components/layout/header"
 import Companies from "../components/companies"
+import AddCompany from "../components/addCompanies"
+import axios from 'axios';
 
 export default {
     name: 'Home',
     components: {
         Header,
-        Companies
+        Companies,
+        AddCompany
     },
     data() {
         return {
@@ -33,6 +37,22 @@ export default {
                     branch: "Mat"
                 }
             ]
+        }
+    },
+    methods: {
+        addCompanies(newCompany) {
+            const {
+                id,
+                title
+            } = newCompany;
+
+            axios.post('newCompany', {
+                id,
+                title
+            })
+            .then(res => this.company = [...this.company, res.data])
+            .catch(err => console.log(err))
+            this.company = [...this.company, newCompany];
         }
     }
 }
